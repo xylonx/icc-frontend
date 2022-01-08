@@ -25,12 +25,7 @@ class ImageCard extends React.Component<ImageCardProp, ImageCardState> {
     render() {
         return (
             <Card sx={{ maxWidth: 345 }}>
-                <CardMedia
-                    component="img"
-                    height="140"
-                    image={this.props.imageURL}
-                    alt="green iguana"
-                />
+                <CardMedia component="img" height="140" image={this.props.imageURL} alt="green iguana" />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                         {this.props.imageID}
@@ -62,22 +57,13 @@ class FormRow extends React.Component {
             <React.Fragment>
                 <Grid item xs={6}>
                     {/* <MediaCard imageID="12"></MediaCard> */}
-                    <ImageCard
-                        imageID="xx.png"
-                        imageURL={this.imageurl}
-                    ></ImageCard>
+                    <ImageCard imageID="xx.png" imageURL={this.imageurl}></ImageCard>
                 </Grid>
                 <Grid item xs>
-                    <ImageCard
-                        imageID="xx.png"
-                        imageURL={this.imageurl}
-                    ></ImageCard>
+                    <ImageCard imageID="xx.png" imageURL={this.imageurl}></ImageCard>
                 </Grid>
                 <Grid item xs>
-                    <ImageCard
-                        imageID="xx.png"
-                        imageURL={this.imageurl}
-                    ></ImageCard>
+                    <ImageCard imageID="xx.png" imageURL={this.imageurl}></ImageCard>
                 </Grid>
             </React.Fragment>
         );
