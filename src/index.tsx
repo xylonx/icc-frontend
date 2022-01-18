@@ -1,13 +1,13 @@
-import Button from "@mui/material/Button";
 import React from "react";
 import ReactDOM from "react-dom";
-import ImageView from "./ImageView";
+import TopBar from "./components/TopBar";
+import ImageView from "./components/ImageView";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
     <React.StrictMode>
-        <Button variant="contained">Hello World</Button>
+        <TopBar></TopBar>
         <ImageView></ImageView>
     </React.StrictMode>,
     document.getElementById("root")
