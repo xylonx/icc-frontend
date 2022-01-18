@@ -28,8 +28,7 @@
             "double"
         ],
         "no-unused-expressions": [
-            "error",
-            "on"
+            "error"
         ]
     }
 }
