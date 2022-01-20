@@ -1,8 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { enc, MD5 } from "crypto-js";
 import { toast } from "react-toastify";
+import config from "../config/config";
 
-const BaseURL = "http://127.0.0.1:5050/api/v1";
+const BaseURL = config.BaseURL;
 
 const client = axios.create({
     baseURL: BaseURL,
