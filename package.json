@@ -15,10 +15,13 @@
     "@types/node": "^16.7.13",
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
-    "got": "^12.0.0",
+    "axios": "^0.25.0",
+    "crypto-js": "^4.1.1",
     "react": "^17.0.2",
+    "react-device-detect": "^2.1.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
+    "react-toastify": "^8.1.0",
     "styled-components": "^5.3.3",
     "typescript": "^4.5.4",
     "web-vitals": "^2.1.0"
@@ -48,8 +51,10 @@
     ]
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.1.0",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
+    "axios-mock-adapter": "^1.20.0",
     "eslint": "^8.7.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
