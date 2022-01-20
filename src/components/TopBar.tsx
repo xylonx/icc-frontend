@@ -13,13 +13,22 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
+import { GetToken, SetToken, ValidateToken } from "../api/api";
+import ImageUploading from "./ImageUploading";
 
 export default function TopBar() {
     const [auth, setAuth] = useState(false);
     const [open, setOpen] = useState(false);
     const [token, setToken] = useState("");
 
-    useEffect(() => {});
+    useEffect(() => {
+        setAuth(false);
+        (async () => {
+            const token = GetToken();
+            const valid = await ValidateToken(token);
+            if (valid) setAuth(true);
+        })();
+    }, []);
 
     const handleClickOpenDialog = () => {
         setOpen(true);
@@ -31,8 +40,13 @@ export default function TopBar() {
 
     const handleCloseDialogAuth = () => {
         setOpen(false);
-        setAuth(true);
-        console.log(token);
+        (async () => {
+            const valid = await ValidateToken(token);
+            if (valid) {
+                setAuth(true);
+                SetToken(token);
+            }
+        })();
     };
 
     const handleTokenInputChange = (e: any) => {
@@ -46,6 +60,8 @@ export default function TopBar() {
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         Image Collection Center
                     </Typography>
+
+                    {auth && <ImageUploading />}
 
                     <IconButton
                         size="large"
@@ -62,7 +78,9 @@ export default function TopBar() {
                         <DialogTitle>Subscribe</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                To use full feature like uploading your favorite image, please enter your token.
+                                {auth
+                                    ? "You have filled out your token. re-enter it will overwrite the before"
+                                    : "To use full features like uploading your favorite image, please enter your token"}
                             </DialogContentText>
                             <TextField
                                 autoFocus
