@@ -1,14 +1,32 @@
+import Box from "@mui/material/Box";
 import React from "react";
 import ReactDOM from "react-dom";
-import TopBar from "./components/TopBar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ImageView from "./components/ImageView";
+import TopBar from "./components/TopBar";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
     <React.StrictMode>
         <TopBar></TopBar>
-        <ImageView></ImageView>
+        <Box>
+            <ToastContainer
+                position="top-right"
+                autoClose={1000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                limit={4}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+            <ToastContainer />
+            <ImageView></ImageView>
+        </Box>
     </React.StrictMode>,
     document.getElementById("root")
 );
