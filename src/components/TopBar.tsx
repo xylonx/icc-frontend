@@ -12,17 +12,31 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import React, { useEffect, useState } from "react";
-import { GetToken, SetToken, ValidateToken } from "../api/api";
+import React, { useContext, useEffect, useState } from "react";
+import { GetToken, ImageDetail, SetToken, ValidateToken } from "../api/api";
+import { Context } from "../api/context";
 import ImageUploading from "./ImageUploading";
 
-export default function TopBar() {
-    const [auth, setAuth] = useState(false);
+export interface TopBarProps {
+    // eslint-disable-next-line no-unused-vars
+    afterUploading: (detail: ImageDetail) => void;
+}
+
+export default function TopBar(props: TopBarProps) {
+    const [auth, setOriginAuth] = useState(false);
     const [open, setOpen] = useState(false);
     const [token, setToken] = useState("");
 
+    const ctx = useContext(Context);
+
+    const setAuth = (status: boolean) => {
+        setOriginAuth(status);
+        ctx.toggleAuth(status);
+    };
+
     useEffect(() => {
         setAuth(false);
+
         (async () => {
             const token = GetToken();
             const valid = await ValidateToken(token);
@@ -61,7 +75,7 @@ export default function TopBar() {
                         Image Collection Center
                     </Typography>
 
-                    {auth && <ImageUploading />}
+                    {auth && <ImageUploading afterUpload={(detail) => props.afterUploading(detail)} />}
 
                     <IconButton
                         size="large"
