@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import config from "../config/config";
 
 const BaseURL = config.BaseURL;
+const batchLimit = 20;
 
 const client = axios.create({
     baseURL: BaseURL,
@@ -44,25 +45,26 @@ interface GetBatchImagesResponse extends BaseResponse {
 }
 
 export interface ImageDetail {
-    timestamp: Date;
+    timestamp: number;
     image_url: string;
     image_id: string;
     tags: string[];
 }
 
-export async function GetBatchImages(
-    before: Date,
-    tags: string[],
-    limit: number
-): Promise<GetBatchImagesResponse | null> {
+export async function GetBatchImages(before: Date, tags: string[]): Promise<GetBatchImagesResponse | null> {
     try {
         const timestamp = before.getTime();
         const resp = await client.get<GetBatchImagesResponse>(
-            `/images?before=${timestamp}&tag=${tags.join(",")}&limit=${limit}`
+            `/images?before=${timestamp}&tag=${tags.join(",")}&limit=${batchLimit}`
         );
         return resp.data;
-    } catch (e) {
-        toast.error(`get image failed: ${e}`);
+    } catch (err) {
+        if (axios.isAxiosError(err) && err.response) {
+            const resp = err.response.data as BaseResponse;
+            toast.error(resp.message);
+        } else {
+            toast.error(`network error: ${err}`);
+        }
         return null;
     }
 }
@@ -101,7 +103,7 @@ async function completeImageUpload(imageID: string, tags: string[]): Promise<Ima
         image_id: resp.data.data.image_id,
         image_url: resp.data.data.image_url,
         tags: resp.data.data.tags,
-        timestamp: new Date(),
+        timestamp: new Date().getTime(),
     };
 }
 
