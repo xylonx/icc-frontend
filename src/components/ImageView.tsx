@@ -24,7 +24,7 @@ export interface ImageViewProp {
 }
 
 const loadedStyle = {
-    position: "absolute",
+    position: "fixed",
     bottom: 16,
     right: 16,
 };
