@@ -13,7 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import LinearProgress, { LinearProgressProps } from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
-import { UploadImage } from "../api/api";
+import { ImageDetail, UploadImage } from "../api/api";
 import { TagModifier } from "./TagModifier";
 
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
@@ -29,7 +29,12 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number })
     );
 }
 
-function ImageUploading() {
+export interface ImageUploadingProps {
+    // eslint-disable-next-line no-unused-vars
+    afterUpload: (detail: ImageDetail) => void;
+}
+
+function ImageUploading(props: ImageUploadingProps) {
     const [open, setOpen] = useState(false);
 
     const [tags, setTags] = useState<string[]>([]);
@@ -63,9 +68,12 @@ function ImageUploading() {
     const handleCloseDialogUpload = () => {
         (async () => {
             setIsUploading(true);
-            await UploadImage(currentFile!, tags, (event: ProgressEvent) => {
+            const resp = await UploadImage(currentFile!, tags, (event: ProgressEvent) => {
                 setProgress(Math.round((100 * event.loaded) / event.total));
             });
+            if (resp) {
+                props.afterUpload(resp);
+            }
             resetFileState();
         })();
     };
