@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "react-toastify/dist/ReactToastify.css";
 import { ICC } from "./components/ICC";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
