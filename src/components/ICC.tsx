@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import React, { useContext, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { ImageDetail } from "../api/api";
 import { Context } from "../api/context";
 import ImageView from "./ImageView";
@@ -30,7 +31,7 @@ export function ICC() {
             <TopBar afterUploading={handleAppendFreshImages}></TopBar>
             <ToastContainer
                 position="top-right"
-                autoClose={1000}
+                autoClose={1650}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
@@ -40,7 +41,6 @@ export function ICC() {
                 draggable
                 pauseOnHover
             />
-            <ToastContainer />
             <ImageView freshImage={freshImages}></ImageView>
         </Box>
     );
