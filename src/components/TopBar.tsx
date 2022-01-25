@@ -89,7 +89,7 @@ export default function TopBar(props: TopBarProps) {
                     </IconButton>
 
                     <Dialog open={open} onClose={handleCloseDialogCancel}>
-                        <DialogTitle>Subscribe</DialogTitle>
+                        <DialogTitle>Login</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
                                 {auth

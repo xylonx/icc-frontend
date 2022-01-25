@@ -8,7 +8,7 @@ import ImageView from "./ImageView";
 import TopBar from "./TopBar";
 
 export function ICC() {
-    const [freshImages, setFreshImages] = useState<ImageDetail[]>([]);
+    const [freshImage, setFreshImage] = useState<ImageDetail>();
 
     const ctx = useContext(Context);
 
@@ -23,7 +23,7 @@ export function ICC() {
     }, []);
 
     const handleAppendFreshImages = (detail: ImageDetail) => {
-        setFreshImages([detail].concat(freshImages));
+        setFreshImage(detail);
     };
 
     return (
@@ -41,7 +41,7 @@ export function ICC() {
                 draggable
                 pauseOnHover
             />
-            <ImageView freshImage={freshImages}></ImageView>
+            <ImageView freshImage={freshImage}></ImageView>
         </Box>
     );
 }
