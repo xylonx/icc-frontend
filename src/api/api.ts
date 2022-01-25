@@ -177,6 +177,24 @@ export async function GetAllTags(): Promise<Tag[]> {
     }
 }
 
+export async function DeleteImage(imageID: string): Promise<boolean> {
+    try {
+        await client.delete(`/auth/image/${imageID}`, {
+            headers: { Authorization: `Bearer ${GetToken()}` },
+        });
+        toast.success("delete image successfully");
+        return true;
+    } catch (err) {
+        if (axios.isAxiosError(err) && err.response) {
+            const resp = err.response.data as BaseResponse;
+            toast.error(resp.message);
+        } else {
+            toast.error(`network error: ${err}`);
+        }
+        return false;
+    }
+}
+
 export async function AddTags2Image(imageID: string, tags: string[]): Promise<Boolean> {
     try {
         await client.post(

@@ -1,5 +1,6 @@
 import InfoIcon from "@mui/icons-material/Info";
 import LoopIcon from "@mui/icons-material/Loop";
+import { DialogContent } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -7,6 +8,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
 import Fab from "@mui/material/Fab";
 import IconButton from "@mui/material/IconButton";
 import ImageList from "@mui/material/ImageList";
@@ -14,13 +16,13 @@ import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import React, { useContext, useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
-import { AddTags2Image, DeleteTags2Image, GetBatchImages, ImageDetail } from "../api/api";
+import { AddTags2Image, DeleteImage, DeleteTags2Image, GetBatchImages, ImageDetail } from "../api/api";
 import { Context } from "../api/context";
 import "../css/imageview.css";
 import { TagModifier } from "./TagModifier";
 
 export interface ImageViewProp {
-    freshImage: ImageDetail[];
+    freshImage: ImageDetail | undefined;
 }
 
 const loadedStyle = {
@@ -40,14 +42,27 @@ function ImageView(props: ImageViewProp) {
 
     const [loading, setLoading] = useState(false);
 
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
     const ctx = useContext(Context);
 
     useEffect(() => {
         (async () => {
             const resp = await GetBatchImages(new Date(), []);
-            if (resp) setImages(resp.data);
+            if (resp) {
+                if (props.freshImage === undefined) {
+                    setImages(resp.data);
+                } else {
+                    setImages([props.freshImage].concat(resp.data));
+                }
+            }
         })();
     }, []);
+
+    useEffect(() => {
+        if (props.freshImage) setImages([props.freshImage].concat(images));
+    }, [props]);
 
     const handleClickShowImageDetails = (idx: number) => {
         return () => {
@@ -59,6 +74,25 @@ function ImageView(props: ImageViewProp) {
 
     const handleCloseDialogCancel = () => {
         setOpen(false);
+    };
+
+    const handleCloseConfirmDialogCancel = () => {
+        setConfirmDelete(false);
+    };
+
+    const handleDeleteImage = () => {
+        setDeleting(true);
+        (async () => {
+            if (!showImageDetail) return;
+
+            const succ = await DeleteImage(showImageDetail.image_id);
+            if (succ) {
+                setImages(images.filter((_, idx) => idx !== showImageIdx));
+            }
+            setConfirmDelete(false);
+            setOpen(false);
+            setDeleting(false);
+        })();
     };
 
     const handleTagsSync = (tags: string[]) => {
@@ -102,7 +136,7 @@ function ImageView(props: ImageViewProp) {
     return (
         <Box>
             <ImageList variant="masonry" cols={isMobile ? 2 : 3} gap={8}>
-                {props.freshImage.concat(images).map((item, idx) => (
+                {images.map((item, idx) => (
                     <ImageListItem key={idx}>
                         <img src={`${item.image_url}`} srcSet={`${item.image_url}`} loading="lazy" />
                         <ImageListItemBar
@@ -127,22 +161,49 @@ function ImageView(props: ImageViewProp) {
             </Fab>
 
             <Dialog open={open} onClose={handleCloseDialogCancel}>
-                <Card>
-                    <CardMedia
-                        component="img"
-                        image={showImageDetail?.image_url}
-                        alt={showImageDetail?.tags.join(",")}
-                    />
-                    <CardContent>
-                        <TagModifier onSyncTags={handleTagsSync} defaultTags={showImageDetail?.tags}></TagModifier>
-                    </CardContent>
+                <DialogContent sx={{ padding: "0" }}>
+                    <Card>
+                        <CardMedia
+                            component="img"
+                            image={showImageDetail?.image_url}
+                            alt={showImageDetail?.tags.join(",")}
+                        />
+                        <CardContent>
+                            <TagModifier onSyncTags={handleTagsSync} defaultTags={showImageDetail?.tags}></TagModifier>
+                        </CardContent>
 
-                    <CardActions>
-                        <Button size="small" disabled={!ctx.auth} onClick={handleUpdateTags}>
-                            Update Tag
-                        </Button>
-                    </CardActions>
-                </Card>
+                        <CardActions>
+                            <Button size="small" disabled={!ctx.auth} onClick={handleUpdateTags}>
+                                Update Tag
+                            </Button>
+                        </CardActions>
+                    </Card>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialogCancel}>close</Button>
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        disabled={!ctx.auth}
+                        onClick={() => {
+                            setConfirmDelete(true);
+                        }}
+                    >
+                        Delete Image
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={confirmDelete} onClose={handleCloseConfirmDialogCancel}>
+                <Box textAlign="center">
+                    <DialogContent>{"do you really want delete the image?"}</DialogContent>
+                </Box>
+                <DialogActions>
+                    <Button onClick={handleCloseConfirmDialogCancel}>Cancel</Button>
+                    <Button disabled={deleting} variant="contained" color="error" onClick={handleDeleteImage}>
+                        Confirm
+                    </Button>
+                </DialogActions>
             </Dialog>
         </Box>
     );
