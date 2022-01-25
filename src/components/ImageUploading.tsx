@@ -6,7 +6,6 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
@@ -49,6 +48,8 @@ function ImageUploading(props: ImageUploadingProps) {
         setPreviewImage("");
         setProgress(0);
         setIsUploading(false);
+        setTags([]);
+        setOpen(false);
     };
 
     const handleClickOpenDialog = () => {
@@ -65,7 +66,7 @@ function ImageUploading(props: ImageUploadingProps) {
         setOpen(false);
     };
 
-    const handleCloseDialogUpload = () => {
+    const handleDialogUpload = () => {
         (async () => {
             setIsUploading(true);
             const resp = await UploadImage(currentFile!, tags, (event: ProgressEvent) => {
@@ -104,9 +105,7 @@ function ImageUploading(props: ImageUploadingProps) {
 
             <Dialog open={open} onClose={handleDialogClose}>
                 <DialogTitle>Uploading</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>Upload your favorite image</DialogContentText>
-                </DialogContent>
+                <DialogContentText sx={{ padding: 2 }}>Upload your favorite image</DialogContentText>
                 <Box textAlign="center">
                     <label htmlFor="btn-upload">
                         <input
@@ -140,7 +139,7 @@ function ImageUploading(props: ImageUploadingProps) {
 
                 <DialogActions>
                     <Button onClick={handleCloseDialogCancel}>Cancel</Button>
-                    <Button disabled={!currentFile} onClick={handleCloseDialogUpload}>
+                    <Button disabled={!currentFile || isUploading} onClick={handleDialogUpload}>
                         Upload
                     </Button>
                 </DialogActions>
