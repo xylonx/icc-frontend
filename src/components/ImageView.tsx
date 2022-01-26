@@ -1,5 +1,7 @@
 import InfoIcon from "@mui/icons-material/Info";
 import LoopIcon from "@mui/icons-material/Loop";
+// import Stack from "@mui/material/Stack";
+import Masonry from "@mui/lab/Masonry";
 import { DialogContent } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,7 +13,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import Fab from "@mui/material/Fab";
 import IconButton from "@mui/material/IconButton";
-import ImageList from "@mui/material/ImageList";
+// import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import React, { useContext, useEffect, useState } from "react";
@@ -134,8 +136,8 @@ function ImageView(props: ImageViewProp) {
     }
 
     return (
-        <Box>
-            <ImageList variant="masonry" cols={isMobile ? 2 : 3} gap={8}>
+        <Box sx={{ padding: 2 }}>
+            <Masonry columns={isMobile ? 2 : 3} spacing={1}>
                 {images.map((item, idx) => (
                     <ImageListItem key={idx}>
                         <img src={`${item.image_url}`} srcSet={`${item.image_url}`} loading="lazy" />
@@ -153,7 +155,7 @@ function ImageView(props: ImageViewProp) {
                         />
                     </ImageListItem>
                 ))}
-            </ImageList>
+            </Masonry>
 
             <Fab disabled={loading} variant="extended" onClick={handleLoadMoreClick} sx={loadedStyle}>
                 more
