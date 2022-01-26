@@ -1,0 +1,13 @@
+{
+    "plugins": [
+        [
+            "transform-inline-environment-variables",
+            {
+                "include": [
+                    "NODE_ENV",
+                    "REACT_APP_API_URL"
+                ]
+            }
+        ]
+    ]
+}
