@@ -10,6 +10,9 @@ switch (process.env.NODE_ENV) {
     case "production":
         baseURL = "https://back.icc.xylonx.com/api/v1";
         break;
+
+    case "test":
+        baseURL = "https://back.preview.icc.xylonx.com/api/v1";
 }
 
 export default {
