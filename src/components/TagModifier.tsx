@@ -41,7 +41,7 @@ function AuthAutocomplete(props: TagModifierProp) {
                     <Chip variant="outlined" size="small" label={option} {...getTagProps({ index })} />
                 ))
             }
-            renderInput={(params) => <TextField {...params} variant="filled" label="tags" placeholder="Favorites" />}
+            renderInput={(params) => <TextField {...params} variant="filled" label="tags" placeholder="tags" />}
         />
     );
 }

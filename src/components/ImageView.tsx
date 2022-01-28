@@ -1,8 +1,8 @@
 import InfoIcon from "@mui/icons-material/Info";
 import LoopIcon from "@mui/icons-material/Loop";
-// import Stack from "@mui/material/Stack";
 import Masonry from "@mui/lab/Masonry";
-import { DialogContent } from "@mui/material";
+import { Chip, DialogContent, TextField } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -18,13 +18,17 @@ import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import React, { useContext, useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
-import { AddTags2Image, DeleteImage, DeleteTags2Image, GetBatchImages, ImageDetail } from "../api/api";
+import { AddTags2Image, DeleteImage, DeleteTags2Image, GetAllTags, GetBatchImages, ImageDetail, Tag } from "../api/api";
 import { Context } from "../api/context";
 import "../css/imageview.css";
 import { TagModifier } from "./TagModifier";
 
 export interface ImageViewProp {
     freshImage: ImageDetail | undefined;
+}
+
+interface queryParams {
+    tags: string[];
 }
 
 const loadedStyle = {
@@ -47,11 +51,25 @@ function ImageView(props: ImageViewProp) {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleting, setDeleting] = useState(false);
 
+    const [queryParams, setQueryParams] = useState<queryParams>({ tags: [] });
+    const [allTags, setAllTags] = useState<Tag[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            const tags = await GetAllTags();
+            setAllTags(tags);
+        })();
+    }, []);
+
+    const handleAutocompleteChange = (event: React.SyntheticEvent, value: string[]) => {
+        setQueryParams({ tags: value });
+    };
+
     const ctx = useContext(Context);
 
     useEffect(() => {
         (async () => {
-            const resp = await GetBatchImages(new Date(), []);
+            const resp = await GetBatchImages(new Date(), queryParams.tags);
             if (resp) {
                 if (props.freshImage === undefined) {
                     setImages(resp.data);
@@ -60,7 +78,7 @@ function ImageView(props: ImageViewProp) {
                 }
             }
         })();
-    }, []);
+    }, [queryParams]);
 
     useEffect(() => {
         if (props.freshImage) setImages([props.freshImage].concat(images));
@@ -129,7 +147,7 @@ function ImageView(props: ImageViewProp) {
     function handleLoadMoreClick() {
         setLoading(true);
         (async () => {
-            const resp = await GetBatchImages(new Date(images[images.length - 1].timestamp), []);
+            const resp = await GetBatchImages(new Date(images[images.length - 1].timestamp), queryParams.tags);
             if (resp) setImages([...images].concat(resp.data));
             setLoading(false);
         })();
@@ -137,6 +155,23 @@ function ImageView(props: ImageViewProp) {
 
     return (
         <Box sx={{ padding: 2 }}>
+            <Autocomplete
+                sx={{ padding: 2 }}
+                size="small"
+                multiple
+                id="tags-filled"
+                options={allTags.map((item) => item.tag_name)}
+                freeSolo
+                onChange={handleAutocompleteChange}
+                renderTags={(value: readonly string[], getTagProps) =>
+                    value.map((option: string, index: number) => (
+                        // eslint-disable-next-line react/jsx-key
+                        <Chip variant="outlined" size="small" label={option} {...getTagProps({ index })} />
+                    ))
+                }
+                renderInput={(params) => <TextField {...params} variant="filled" label="tags" placeholder="tags" />}
+            />
+
             <Masonry columns={isMobile ? 2 : 3} spacing={1}>
                 {images.map((item, idx) => (
                     <ImageListItem key={idx}>

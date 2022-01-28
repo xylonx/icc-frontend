@@ -162,7 +162,7 @@ export interface Tag {
 
 export async function GetAllTags(): Promise<Tag[]> {
     try {
-        const resp = await client.get<GetAllTagsResponse>("/auth/image/tag", {
+        const resp = await client.get<GetAllTagsResponse>("/tags", {
             headers: { Authorization: `Bearer ${GetToken()}` },
         });
         return resp.data.data;
