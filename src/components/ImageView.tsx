@@ -147,7 +147,7 @@ function ImageView(props: ImageViewProp) {
     function handleLoadMoreClick() {
         setLoading(true);
         (async () => {
-            const resp = await GetBatchImages(new Date(images[images.length - 1].timestamp), []);
+            const resp = await GetBatchImages(new Date(images[images.length - 1].timestamp), queryParams.tags);
             if (resp) setImages([...images].concat(resp.data));
             setLoading(false);
         })();
